@@ -77,6 +77,17 @@ async function run() {
             console.log('load the data', id);
             res.send(user)
         })
+        app.delete('/allorders/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const query = {
+                _id: ObjectId(id)
+            }
+            const result = await ordersCollection.deleteOne(query)
+            console.log('deleting the user', result);
+            res.json(result);
+            console.log(result)
+        });
         app.put('/allOrders/:id', async (req, res) => {
             const id = req.params.id;
             const updateOrders = req.body;
