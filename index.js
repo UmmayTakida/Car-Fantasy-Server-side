@@ -22,6 +22,7 @@ async function run() {
         const productsCollection = database.collection("products");
         const ordersCollection = database.collection("orders");
         const usersCollection = database.collection("users")
+        const reviewCollection = database.collection("reviews")
 
         app.get('/products', async (req, res) => {
             // find email to filterout
@@ -54,6 +55,17 @@ async function run() {
             const product = await productsCollection.findOne(query);
             res.json(product);
         })
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const query = {
+                _id: ObjectId(id)
+            }
+            const result = await productsCollection.deleteOne(query)
+            console.log('deleting the user', result);
+            res.json(result);
+            console.log(result)
+        });
 
 
         app.get('/allOrders/:id', async (req, res) => {
@@ -87,6 +99,7 @@ async function run() {
             console.log('get data from database', orders)
             res.send(orders);
         })
+
         // get the specific order api with eamil
         app.get('/myOrders', async (req, res) => {
             // find email to filterout
@@ -108,6 +121,31 @@ async function run() {
             console.log(result);
 
         })
+        app.delete('/allOrders/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const query = {
+                _id: ObjectId(id)
+            }
+            const result = await ordersCollection.deleteOne(query)
+            console.log('deleting the user', result);
+            res.json(result);
+            console.log(result)
+        });
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewCollection.find({});
+            const reviews = await cursor.toArray();
+            console.log('get data from database', reviews)
+            res.send(reviews);
+        })
+        app.post('/reviews', async (req, res) => {
+            const reviews = req.body;
+            const result = await reviewCollection.insertOne(reviews);
+            res.json(result)
+            console.log(result);
+
+        })
+
         app.get('/users/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email }
